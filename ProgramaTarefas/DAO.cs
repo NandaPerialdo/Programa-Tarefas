@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using MySql.Data;//imports para usar o my sql
 using MySql.Data.MySqlClient;
-
+using Mysqlx.Crud;
 
 namespace ProgramaTarefas
 {
@@ -13,6 +15,15 @@ namespace ProgramaTarefas
     {
         public MySqlConnection conexao; //atribuindo os metodos da classe
                                         //MySqlConnection para a variavel conexao
+        public string dados;
+        public string sql;
+        public string resultado;
+        public string nome;//declarando as variaveis que serao usadas pra preencher o banco
+        public string telefone;
+        public string email;
+        public string datanasc;
+        public string login;
+        public string senha;
         public DAO()
         {
             conexao = new MySqlConnection("server=localhost;DataBase=Pessoa;Uid=root;Password="); //estabelecendo conexao da classe MySqlConnection com a variavel conexao 
@@ -28,8 +39,24 @@ namespace ProgramaTarefas
             }//fim do try catch
         }//fim do metodo DAO
 
-        public void InserirUsuario (string nome,  )
+        public void InserirUsuario (string nome, string telefone, string email, string datanasc, string login, string senha)
+        {
+            try
+            {
+                dados = "('','" + nome + "', '" + telefone + "','" + email + "','" + datanasc + "','" + login + "','" + senha + "')";
+                sql = "insert into usuario(codigo, nome, telefone, email, datanasc, login, senha) values" + dados;//essa linha representa entre "" o que será executado dentro do banco de dados
+                                                                                                                  //na linha de cima, dentro da variavel "dados" serao preenchidos os dados a serem
+                                                                                                                  //inseridos, antes de executar a linha de codigo no banco de dados
 
+                MySqlCommand conn = new MySqlCommand(sql, conexao);// preparando a execuçao no banco
+                resultado = "" + conn.ExecuteNonQuery();//executa o comando dentro do banco de dados (ctrl + enter)
+                Console.WriteLine(resultado + "Linha afetada");
+            }//fim do try
+            catch (Exception erro)//caso ocorra erro na execução
+            {
+                Console.WriteLine("Erro! Algo deu errado :(\n\n\n" + erro);
+            }//fim do catch
+        }//fim do metodo inserir usuario
 
     }//fim da classe
 }//fim do projeto

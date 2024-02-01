@@ -12,7 +12,7 @@ namespace ProgramaTarefas
         {
             ControlUsuario control = new ControlUsuario();//criando uma variavel (control)  para representar
                                             //a classe Control() 
-            control.();
+            control.Operacao();
 
             Console.ReadLine();//manter o prompt aberto
         }//fim do metodo

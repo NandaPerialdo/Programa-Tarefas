@@ -13,14 +13,15 @@ namespace ProgramaTarefas
         private int opcao;
         public ControlUsuario() //criando o metodo contrutor
         {
+            ConsultarOpcao = 0;
             conectar = new DAO();//conectando a variavel conectar
                                  //ao DAO (banco de dados)
         }//fim do construtor
 
         public int ConsultarOpcao
         {
-            get { return this.ConsultarOpcao; }
-            set { this.ConsultarOpcao = value; }
+            get { return this.opcao; }
+            set { this.opcao = value; }
         }//fim do metodo get set
 
         public void Menu()
@@ -44,6 +45,7 @@ namespace ProgramaTarefas
                         break;
                     case 2:
                         //fazer cadastro
+                        CadastrarUsuario();
                         break;
                     case 3:
                         //sair
@@ -55,11 +57,24 @@ namespace ProgramaTarefas
             } while (ConsultarOpcao != 3);
         }//fim do metodo operacao
 
-        public void Cadastrar()
+        public void CadastrarUsuario()
         {
-            Console.WriteLine("Insira o nome da pessoa: ");
-
-        }
+            //guardando as informações em variaveis para preencher o banco de dados
+            Console.WriteLine("Insira seu nome: ");
+            string nome = Console.ReadLine();
+            Console.WriteLine("Insira o telefone: ");
+            string telefone = Console.ReadLine();
+            Console.WriteLine("Insira o email: ");
+            string email = Console.ReadLine();
+            Console.WriteLine("Insira a data de nascimento: ");
+            string datanasc = Console.ReadLine();
+            Console.WriteLine("Insira seu nome de login: ");
+            string login = Console.ReadLine();
+            Console.WriteLine("Insira seu nome de senha: ");
+            string senha = Console.ReadLine();
+            //inserir no banco de dados
+            conectar.InserirUsuario(nome,telefone,email,datanasc, login, senha);
+        }//fim do metodo cadastrar usuario
 
 
 
