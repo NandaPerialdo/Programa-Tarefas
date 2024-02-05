@@ -11,14 +11,20 @@ namespace ProgramaTarefas
         DAO conectar;// criando uma variavel (conectar) para representar
                      // o DAO
         private int opcao;
-        public int ConsultarOpcaoTarefas;
+        private int ConsultarOpcaoTarefas;
+        private int opcaoAlterar;
+        public int codTarefa;
+        
 
         public ControlUsuario() //criando o metodo contrutor
         {
+
             ConsultarOpcao = 0;
             conectar = new DAO();//conectando a variavel conectar
                                  //ao DAO (banco de dados)
         }//fim do construtor
+
+
 
         public int ConsultarOpcao
         {
@@ -26,7 +32,7 @@ namespace ProgramaTarefas
             set { this.opcao = value; }
         }//fim do metodo get set
 
-        public void Menu()
+        public void MenuPrincipal()
         {
             Console.WriteLine("O que deseja fazer?: \n" +
                               "1. Fazer Login \n" +
@@ -35,38 +41,26 @@ namespace ProgramaTarefas
             ConsultarOpcao = Convert.ToInt32(Console.ReadLine());
         }//fim do metodo menu
 
+        public void MostrarMenuTarefas()
+        {
+            Console.WriteLine("Escolha uma opção:\n" +
+                              "1. Criar Tarefa.\n" +
+                              "2. Alterar Tarefa.\n" +
+                              "3. Excluir Tarefa.\n" +
+                              "4. Consultar Tarefa.\n");
+            ConsultarOpcaoTarefas = Convert.ToInt32(Console.ReadLine());
+        }//fim do menu tarefa
+
         public void Operacao()
         {
             do
             {
-                Menu();//mostrar menu pro usuario
+                MenuPrincipal();//mostrar menu pro usuario
                 switch (ConsultarOpcao)
                 {
                     case 1:
                         //fazer login
-                        do
-                        {
-                            MenuTarefas();
-                            switch (ConsultarOpcaoTarefas)
-                            {
-                                case 1:
-                                    //criar tarefa
-                                    break;
-                                case 2:
-                                    //alterar tarefa
-                                    break;
-                                case 3:
-                                    //excluir tarefa 
-                                    break;
-                                case 4:
-                                    //consultar tarefa
-                                    break;
-                                default:
-                                    //caso o usuario insira um numero diferente de 4
-                                    Console.WriteLine("Erro! Escolha uma opção entre 1 e 4");
-                                    break;
-                            }//fim do escolha caso
-                        } while (ConsultarOpcaoTarefas != 4);
+                        MenuTarefas();
                         break;
                     case 2:
                         //fazer cadastro
@@ -96,7 +90,7 @@ namespace ProgramaTarefas
             string datanasc = Console.ReadLine();
             Console.WriteLine("Insira seu nome de login: ");
             string login = Console.ReadLine();
-            Console.WriteLine("Insira seu nome de senha: ");
+            Console.WriteLine("Insira sua senha: ");
             string senha = Console.ReadLine();
             //inserir no banco de dados
             conectar.InserirUsuario(nome, telefone, email, datanasc, login, senha);
@@ -104,32 +98,94 @@ namespace ProgramaTarefas
 
         public void MenuTarefas()
         {
-            Console.WriteLine("Escolha uma opção:\n" +
-                              "1. Criar Tarefa.\n" +
-                              "2. Alterar Tarefa.\n" +
-                              "3. Excluir Tarefa.\n" +
-                              "4. Consultar Tarefa.\n");
-            int ConsultarOpcaoTarefas = Convert.ToInt32(Console.ReadLine());
-    }//fim do menu tarefa
+            MostrarMenuTarefas();
+            switch (ConsultarOpcaoTarefas)
+            {
+                case 1:
+                    //criar tarefa
+                    Console.WriteLine("Qual o nome da tarefa?");
+                    string nomeTarefa = Console.ReadLine();
+                    Console.WriteLine("Qual a descrição?");
+                    string descricaoTarefa = Console.ReadLine();
+                    Console.WriteLine("Qual a data?");
+                    string dtTarefa = Console.ReadLine();
+                    //inserir no banco
+                    conectar.InserirTarefa(nomeTarefa, descricaoTarefa, dtTarefa);//conectando este metodo ao metodo "inserirTarefa" da DAO
+                    break;
+                case 2:
+                    //alterar tarefa
+                    AlterarTarefa();
+                    break;
+                case 3:
+                    //excluir tarefa
+                    ExcluirTarefa();
+                    break;
+                case 4:
+                    //consultar tarefa
 
-        public void CriarTarefa()
+                    break;
+                default:
+                    Console.WriteLine("Erro! Opção inválida");
+                    break;
+            }//fim do switch           
+        }//fim do metodo mostrar menu tarefas
+
+        public void MostrarMenuAlterar()
         {
-            Console.WriteLine("Qual o nome da tarefa?");
-            nomeTarefa = Console.ReadLine();
-            Console.WriteLine("Qual a descrição?");
-            descricaoTarefa = Console.ReadLine();
-            Console.WriteLine("Qual a data de execução?");
-            dtTarefa = Console.WriteLine();
-            //inserir no banco de dados
-            conectar.InserirTarefa(nomeTarefa, descricaoTarefa, dtTarefa);
-        }//fim do metodo criar tarefa
+            Console.WriteLine("\n\nQual campo deseja alterar?\n\n" +
+                              "\n1.Nome da tarefa. " +
+                              "\n2.Descrição da tarefa. " +
+                              "\n3.Data da tarefa. ");
+            opcaoAlterar = Convert.ToInt32(Console.ReadLine());
+        }//fim do metodo que mostra o menu alterar
+
+        //metodo que altera os campos de uma tarefa
+        public void AlterarTarefa()
+        {
+            MostrarMenuAlterar();
+            switch (opcaoAlterar)
+            {
+                case 1:
+                    //alterar nome da tarefa
+                    Console.WriteLine("Informe o código da tarefa que deseja atualizar: ");
+                    codTarefa = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Informe o novo nome:");
+                    string nomeTarefa = Console.ReadLine();
+                    Console.WriteLine("\n\n" + conectar.AtualizarTarefa(codTarefa, "nome", nomeTarefa));
+                    break;
+                case 2:
+                    //alterar descricao da tarefa
+                    Console.WriteLine("Informe o código da tarefa que deseja atualizar: ");
+                    codTarefa = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Informe a nova descricao:");
+                    string descricaoTarefa = Console.ReadLine();
+                    Console.WriteLine("\n\n" + conectar.AtualizarTarefa(codTarefa, "nome", descricaoTarefa));
+                    break;
+                case 3:
+                    //alterar data da tarefa
+                    Console.WriteLine("Informe o código da tarefa que deseja atualizar: ");
+                    codTarefa = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Informe a nova data:");
+                    string dtTarefa = Console.ReadLine();
+                    Console.WriteLine("\n\n" + conectar.AtualizarTarefa(codTarefa, "nome", dtTarefa));
+                    break;
+                default:
+                    Console.WriteLine("Insira uma opção válida");
+                    break;
+            }//fim do switch
+        }//fim do metodo alterar tarefa
+
+        public void ExcluirTarefa()
+        {
+            Console.WriteLine("Informe o código da tarefa que deseja excluir:");
+            codTarefa = Convert.ToInt32(Console.ReadLine());
+            //utilizar o metodo excluir
+            Console.WriteLine("\n\n" + conectar.Excluir(codTarefa));
+        }//fim do metodo excluir tarefa
 
 
 
 
-
-
-
+        
     }// fim da classe
-
 }//fim do projeto

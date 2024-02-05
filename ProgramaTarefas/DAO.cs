@@ -117,11 +117,44 @@ namespace ProgramaTarefas
         {
             try
             {
-                dados = "(''
-            }
-        }
-        
+                dados = "('','" + nomeTarefa + "', '" + descricaoTarefa + "','" + dtTarefa + "','')";
+                sql = "insert into tarefa(codigo, nome, descricao,dt,codigo_usuario) values" + dados;
 
+                MySqlCommand conn = new MySqlCommand(sql, conexao);//praparando a execuçao no banco
+                resultado = "" + conn.ExecuteNonQuery();//executar a query no banco de dados (ctrl + enter)
+                Console.WriteLine(resultado + " Linha afetada");
+            }
+            catch (Exception erro)
+            {
+                Console.WriteLine("Erro!!! Algo deu errado!\n\n\n" + erro);
+            }//fim do try catch
+        }//fim do metodo inserir tarefa
+        
+        //metodo que realiza a atualizaçao da tarefa dentro do banco
+        public string AtualizarTarefa(int cod, string campo, string dado)
+        {
+            try
+            {
+                string query = "update tarefa set " + campo + " = '" + dado + "' where codigo = '" + cod + "'";
+                //preparar o comando do banco de dados
+                MySqlCommand sql = new MySqlCommand(query, conexao);
+                string resultado = "" + sql.ExecuteNonQuery();
+                return resultado + " linha afetada!";
+            }catch (Exception erro)
+            {
+                return "Algo deu errado!\n\n" + erro;
+            }//fim do try catch
+        }//fim do metodo atualizar tarefa
+
+        public string Excluir(int cod)
+        {
+            string query = "delete from tarefa where codigo = '" + cod + "'";
+            //preparar o comando
+            MySqlCommand sql = new MySqlCommand(query, conexao);
+            string resultado = "" + sql.ExecuteNonQuery();
+            //mostrar o resultado p usuario
+            return resultado + " Linha afetada";
+        }//fim do metodo excluir
 
     }//fim da classe
 }//fim do projeto
