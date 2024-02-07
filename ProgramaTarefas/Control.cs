@@ -14,6 +14,7 @@ namespace ProgramaTarefas
         private int ConsultarOpcaoTarefas;
         private int opcaoAlterar;
         public int codTarefa;
+        public int codigo;
         
 
         public ControlUsuario() //criando o metodo contrutor
@@ -34,8 +35,8 @@ namespace ProgramaTarefas
 
         public void MenuPrincipal()
         {
-            Console.WriteLine("O que deseja fazer?: \n" +
-                              "1. Fazer Login \n" +
+            Console.WriteLine("\nO que deseja fazer?: \n\n" +
+                              "1. Menu \n" +
                               "2. Fazer Cadastro \n" +
                               "3. Sair");
             ConsultarOpcao = Convert.ToInt32(Console.ReadLine());
@@ -43,7 +44,7 @@ namespace ProgramaTarefas
 
         public void MostrarMenuTarefas()
         {
-            Console.WriteLine("Escolha uma opção:\n" +
+            Console.WriteLine("\nEscolha uma opção:\n\n" +
                               "1. Criar Tarefa.\n" +
                               "2. Alterar Tarefa.\n" +
                               "3. Excluir Tarefa.\n" +
@@ -108,9 +109,11 @@ namespace ProgramaTarefas
                     Console.WriteLine("Qual a descrição?");
                     string descricaoTarefa = Console.ReadLine();
                     Console.WriteLine("Qual a data?");
-                    string dtTarefa = Console.ReadLine();
+                    int dtTarefa = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Qual a hora?");
+                    int hora = Convert.ToInt32(Console.ReadLine());
                     //inserir no banco
-                    conectar.InserirTarefa(nomeTarefa, descricaoTarefa, dtTarefa);//conectando este metodo ao metodo "inserirTarefa" da DAO
+                    conectar.InserirTarefa(nomeTarefa, descricaoTarefa, dtTarefa, hora,codigo);//conectando este metodo ao metodo "inserirTarefa" da DAO
                     break;
                 case 2:
                     //alterar tarefa
@@ -122,7 +125,7 @@ namespace ProgramaTarefas
                     break;
                 case 4:
                     //consultar tarefa
-
+                    ConsultarTudoTarefa();
                     break;
                 default:
                     Console.WriteLine("Erro! Opção inválida");
@@ -166,8 +169,8 @@ namespace ProgramaTarefas
                     Console.WriteLine("Informe o código da tarefa que deseja atualizar: ");
                     codTarefa = Convert.ToInt32(Console.ReadLine());
                     Console.WriteLine("Informe a nova data:");
-                    string dtTarefa = Console.ReadLine();
-                    Console.WriteLine("\n\n" + conectar.AtualizarTarefa(codTarefa, "nome", dtTarefa));
+                    int dtTarefa = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("\n\n" + conectar.AtualizarTarefa(codTarefa, "nome", Convert.ToString(dtTarefa)));
                     break;
                 default:
                     Console.WriteLine("Insira uma opção válida");
@@ -183,7 +186,13 @@ namespace ProgramaTarefas
             Console.WriteLine("\n\n" + conectar.Excluir(codTarefa));
         }//fim do metodo excluir tarefa
 
+        //colocar o metodo consultar tudo dentro de um console.writeline para que a mensagem
+        //seja exibida ao rodar o metodo
 
+        public void ConsultarTudoTarefa()
+        {
+            Console.WriteLine(conectar.ConsultarTudoTarefa());
+        }//fim do metodo consultar tudo
 
 
         

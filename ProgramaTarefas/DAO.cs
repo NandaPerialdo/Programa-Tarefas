@@ -12,6 +12,7 @@ using Mysqlx.Crud;
 namespace ProgramaTarefas
 {
     class DAO
+
     {
         public MySqlConnection conexao; //atribuindo os metodos da classe
                                         //MySqlConnection para a variavel conexao
@@ -29,7 +30,9 @@ namespace ProgramaTarefas
         public int contador;
         public string[] nomeTarefa;
         public string[] descricaoTarefa;
-        public string[] dtTarefa;
+        public int[] dtTarefa;
+        public int[] hora;
+        public string msg;
         public DAO()
         {
             conexao = new MySqlConnection("server=localhost;DataBase=ProgramaTarefas;Uid=root;Password="); //estabelecendo conexao da classe MySqlConnection com a variavel conexao 
@@ -64,61 +67,12 @@ namespace ProgramaTarefas
             }//fim do catch
         }//fim do metodo inserir usuario
 
-        public void PreencherVetorUsuario()
-        {
-            string query = "select * from usuario";
-
-            //instanciar os valores
-            codigo = new int[100];
-            nome = new string[100];
-            telefone = new string[100];
-            email = new string[100];
-            dtnasc = new string[100];
-            login = new string[100];
-            senha = new string[100];
-
-            //preencher com valores genericos
-            for(i = 0; i < 100; i++)
-            {
-                codigo[i] = 0;
-                nome[i] = "";
-                telefone[i] = "";
-                email[i] = "";
-                dtnasc[i] = "";
-                login[i] = "";
-                senha[i] = "";
-            }//fim do for
-
-            //preparando o comando para o banco
-            MySqlCommand coletar = new MySqlCommand(query, conexao);
-            //leitura do banco
-            MySqlDataReader leitura = coletar.ExecuteReader();
-
-            i = 0;
-            contador = 0;
-
-            while(leitura.Read())
-            {
-                codigo[i] = Convert.ToInt32(leitura["codigo"]);
-                nome[i] = "" + leitura["nome"];
-                telefone[i] = "" + leitura["telefone"];
-                email[i] = "" + leitura["email"];
-                dtnasc[i] = "" + leitura["dtnasc"];
-                login[i] = "" + leitura["login"];
-                senha[i] = "" + leitura["senha"];
-                i++;
-                contador++;
-            }//preenchendo o vetor com os dados do banco
-
-            leitura.Close();//encerrar o acesso ao banco de dados
-        }//fim do preencher
-
-        public void InserirTarefa(string nomeTarefa, string descricaoTarefa, string dtTarefa)
+        public void InserirTarefa(string nomeTarefa, string descricaoTarefa, int dtTarefa, int hora, int codigo)
         {
             try
             {
-                dados = "('','" + nomeTarefa + "', '" + descricaoTarefa + "','" + dtTarefa + "','')";
-                sql = "insert into tarefa(codigo, nome, descricao,dt,codigo_usuario) values" + dados;
+                dados = "('','" + nomeTarefa + "','" + descricaoTarefa + "','" + dtTarefa + "','" + hora + "','')";
+                sql = "insert into tarefa(codigo, nome, descricao,dt,hora,codigo_usuario) values" + dados;
 
                 MySqlCommand conn = new MySqlCommand(sql, conexao);//praparando a execuçao no banco
                 resultado = "" + conn.ExecuteNonQuery();//executar a query no banco de dados (ctrl + enter)
@@ -155,6 +109,72 @@ namespace ProgramaTarefas
             //mostrar o resultado p usuario
             return resultado + " Linha afetada";
         }//fim do metodo excluir
+
+        //criando vetor para coletar os dados do banco de dados e posteriormente criar o
+        //metodo consultar
+
+        public void PreencherVetorTarefa()
+        {
+            string query = "select * from tarefa";
+
+            //declarar vetores
+            codigo = new int[100];
+            nomeTarefa = new string[100];
+            descricaoTarefa = new string[100];
+            dtTarefa = new int[100]; 
+
+            //preencher os vetores com valores genericos
+            for(i = 0; i < 100;i++)
+            {
+                codigo[i] = 0;
+                nomeTarefa[i] = "";
+                descricaoTarefa[i] = "";
+                dtTarefa[i] = 0;
+            }//fim do for
+
+            //preparando o comando para o banco
+            MySqlCommand coletar = new MySqlCommand(query, conexao);
+            //leitura do banco
+            MySqlDataReader leitura = coletar.ExecuteReader();
+
+            i = 0;
+            contador = 0;
+
+            //preencher o vetor com os dados do banco
+
+            while(leitura.Read())
+            {
+                codigo[i] = Convert.ToInt32(leitura["codigo"]);
+                nomeTarefa[i] = "" + leitura["nome"];
+                descricaoTarefa[i] = "" + leitura["descricao"];
+                dtTarefa[i] = Convert.ToInt32(leitura["dt"]);
+                hora[i] = Convert.ToInt32(leitura["hora"]);
+                i++;
+                contador++;
+            }//fim do while
+
+            leitura.Close();//encerrar o acesso ao banco de dados
+        }//fim do metodo preencher vetor tarefa
+
+        //metodo para consultar todos os dados do banco de dados
+
+        public string ConsultarTudoTarefa()
+        {
+            //preencher os vetores
+            PreencherVetorTarefa();
+            msg = "";
+            for(i=0; i < contador; i++)
+            {
+                msg += "\n\nCódigo: " + codigo[i] +
+                       " , Nome da Tarefa: " + nomeTarefa[i] +
+                       " , Descrição: " + descricaoTarefa[i] +
+                       " , Data: " + dtTarefa[i] +
+                       " , Hora: " + hora[i];
+            }//fim do for
+
+            return msg;//mostrar em tela o que foi preenchido dentro dos vetores
+        }//fim do metodo consultar tudo
+        
 
     }//fim da classe
 }//fim do projeto
